@@ -1,22 +1,24 @@
-import { auth, currentUser } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
-import SurveyForm from "@/components/survey-form"
+"use client";
 
-export default async function SurveyPage() {
-  const { userId } = auth()
-  const user = await currentUser()
+import { redirect } from "next/navigation";
+import SurveyForm from "@/components/survey-form";
+import { useUser } from "@clerk/nextjs";
+import { LoadingSpinner } from "@/components/ui/spinner";
 
-  if (!userId || !user) {
-    redirect("/sign-in")
-  }
+export default function SurveyPage() {
+  const { user, isLoaded } = useUser();
 
-  // Pre-fill email from user's Clerk account
-  const userEmail = user.emailAddresses[0]?.emailAddress || ""
+  if (!isLoaded) return <LoadingSpinner />;
+
+  if (!user) return redirect("/sign-in");
+
+  const userEmail = user.emailAddresses[0]?.emailAddress || "";
+  const userId = user.id;
 
   return (
     <div className="container mx-auto py-10 max-w-3xl">
       <h1 className="text-3xl font-bold mb-8 text-center">Survey Form</h1>
       <SurveyForm userEmail={userEmail} userId={userId} />
     </div>
-  )
+  );
 }
