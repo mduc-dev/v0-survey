@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 export default async function Home() {
   const { userId } = await auth();
 
-  if (userId) redirect("/survey")
+  if (userId) redirect("/survey");
 
   return (
     <div className="flex min-h-screen flex-col">
